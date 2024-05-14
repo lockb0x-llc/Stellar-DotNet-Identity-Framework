@@ -1,0 +1,27 @@
+﻿# Ignore Visual Studio temporary files, build results, and
+# user-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# User-specific files (Mono Auto Generated)
+mono_crash.*
+
+# Mono Auto Generated Files
+mono_crash.*
+
+# Build results
+[Bb]in/
+[Oo]bj/
+
+# Enable "Build with /p:UseSharedCompilation=false" to share the compilation results
+.vs/
