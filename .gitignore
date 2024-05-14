@@ -1,0 +1,7 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/StellarDotNetIdentityFramework/appsettings.json
+/StellarDotNetIdentityFramework/appsettings.Development.json
