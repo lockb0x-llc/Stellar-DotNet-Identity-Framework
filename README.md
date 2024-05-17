@@ -9,7 +9,6 @@ The Microsoft Identity Platform, a widely-used authentication system, serves mil
 
 ![image](https://github.com/lockb0x-llc/Stellar-DotNet-Identity-Framework/assets/8976999/5e05ca83-3453-4b32-a7e6-4f28257df452)
 
-
 ## Features
 
 - **Account Abstraction**: Enhances username/password or password-less authentication with Stellar transaction signing and account recovery mechanisms.
@@ -41,3 +40,6 @@ For end-users, blockchain operations and signing are designed to be transparent.
 ---
 
 This integration not only extends the capabilities of the Microsoft Identity Platform with cutting-edge blockchain technology but also maintains the platform's ease of use and robust security features, making it an essential upgrade for any developer working within the Microsoft ecosystem.
+
+![image](https://github.com/lockb0x-llc/Stellar-DotNet-Identity-Framework/assets/8976999/a1324197-a474-482f-8f3d-8b5474c52028)
+
