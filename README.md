@@ -7,6 +7,9 @@ This project integrates Stellar account operations and management into the Micro
 
 The Microsoft Identity Platform, a widely-used authentication system, serves millions daily across services like Windows, Xbox, Office, Outlook, LinkedIn, and thousands of enterprise applications using Microsoft Entra (formerly Active Directory). It implements OAuth 2.0 and OpenID 1.0 protocols, providing comprehensive features for registration, sign-in, password management, multi-factor authentication, and more.
 
+![image](https://github.com/lockb0x-llc/Stellar-DotNet-Identity-Framework/assets/8976999/5e05ca83-3453-4b32-a7e6-4f28257df452)
+
+
 ## Features
 
 - **Account Abstraction**: Enhances username/password or password-less authentication with Stellar transaction signing and account recovery mechanisms.
