@@ -1,5 +1,5 @@
 #Stellar DotHet Identity Framework
-## Stellar Identity Integration for Microsoft Identity Platform
+## Stellar Account Integration for Microsoft Identity Platform
 
 ## Overview
 
