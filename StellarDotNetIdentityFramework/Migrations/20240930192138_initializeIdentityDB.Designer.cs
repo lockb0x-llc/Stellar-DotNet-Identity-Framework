@@ -12,8 +12,8 @@ using StellarDotNetIdentityFramework.Data;
 namespace StellarDotNetIdentityFramework.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240927233106_initializeSchema")]
-    partial class initializeSchema
+    [Migration("20240930192138_initializeIdentityDB")]
+    partial class initializeIdentityDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

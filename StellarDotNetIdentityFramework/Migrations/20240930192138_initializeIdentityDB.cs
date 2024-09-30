@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace StellarDotNetIdentityFramework.Migrations
 {
     /// <inheritdoc />
-    public partial class initializeSchema : Migration
+    public partial class initializeIdentityDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
