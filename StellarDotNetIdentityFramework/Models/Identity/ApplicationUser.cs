@@ -7,8 +7,7 @@ namespace StellarDotNetIdentityFramework.Models.Identity
     /// </summary>
     public class ApplicationUser : IdentityUser<Guid>
     {
-        public required string StellarPublicKey { get; set; }
-        public required string StellarSecretKey { get; set; }
+        public virtual required ICollection<UserKeyPair> KeyPairs { get; set; }
     }
 }
 

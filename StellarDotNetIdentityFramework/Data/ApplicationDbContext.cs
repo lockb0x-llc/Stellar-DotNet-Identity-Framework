@@ -12,11 +12,20 @@ namespace StellarDotNetIdentityFramework.Data
         {
         }
 
+        public DbSet<UserKeyPair> UserKeyPairs { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-            // Configure Asp Net Identity Tables to use Guid
+            // Configure the one-to-many relationship
+            builder.Entity<UserKeyPair>()
+                .HasOne(kp => kp.User)
+                .WithMany(u => u.KeyPairs)
+                .HasForeignKey(kp => kp.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Ensure GUIDs are used as primary keys
             builder.Entity<ApplicationUser>(b =>
             {
                 b.HasKey(u => u.Id);
