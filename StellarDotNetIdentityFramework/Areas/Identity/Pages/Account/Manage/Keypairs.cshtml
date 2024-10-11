@@ -1,0 +1,30 @@
+﻿@page
+@model KeypairsModel
+@{
+    ViewData["Title"] = "My Keypairs";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Label</th>
+            <th>Public Key</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var keypair in Model.KeyPairs)
+        {
+            <tr>
+                <td>@keypair.Label</td>
+                <td>
+                    <a asp-page="UseKeypair" asp-route-id="@keypair.Id">Use</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-page="AddKeypair">Add New Keypair</a>
