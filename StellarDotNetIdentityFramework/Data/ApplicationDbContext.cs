@@ -12,16 +12,16 @@ namespace StellarDotNetIdentityFramework.Data
         {
         }
 
-        public DbSet<UserKeyPair> UserKeyPairs { get; set; }
+        public DbSet<ApplicationUserKeyPair> UserKeyPairs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
             // Configure the one-to-many relationship
-            builder.Entity<UserKeyPair>()
+            builder.Entity<ApplicationUserKeyPair>()
                 .HasOne(kp => kp.User)
-                .WithMany(u => u.KeyPairs)
+                .WithMany(static u => u.KeyPairs)
                 .HasForeignKey(kp => kp.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 

@@ -228,7 +228,7 @@ namespace StellarDotNetIdentityFramework.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("UserKeyPair", b =>
+            modelBuilder.Entity("AspNetUserKeyPair", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -310,7 +310,7 @@ namespace StellarDotNetIdentityFramework.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("UserKeyPair", b =>
+            modelBuilder.Entity("AspNetUserKeyPair", b =>
                 {
                     b.HasOne("StellarDotNetIdentityFramework.Models.Identity.ApplicationUser", "User")
                         .WithMany("KeyPairs")

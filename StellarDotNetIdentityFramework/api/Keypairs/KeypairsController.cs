@@ -31,8 +31,12 @@ namespace StellarDotNetIdentityFramework.Areas.Identity.Pages.Account.Manage
                 .Select(kp => new
                 {
                     kp.Id,
+                    kp.UserId,
+                    kp.User,
                     kp.EncryptedKeyPair,
-                    kp.PublicKey
+                    kp.PublicKey,
+                    kp.Label,
+                    kp.CreatedAt
                 })
                 .ToListAsync();
 

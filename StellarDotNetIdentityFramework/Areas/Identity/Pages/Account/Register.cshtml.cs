@@ -66,15 +66,15 @@ namespace StellarDotNetIdentityFramework.Areas.Identity.Pages.Account
                     Id = Guid.NewGuid(),
                     UserName = Input.Email,
                     Email = Input.Email,
-                    KeyPairs = new List<UserKeyPair>() // Initialize the required KeyPairs property
+                    KeyPairs = new List<AspNetUserKeyPair>() // Initialize the required KeyPairs property
                 };
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
-                    // Create and save the UserKeyPair
-                    var userKeyPair = new UserKeyPair()
+                    // Create and save the AspNetUserKeyPair
+                    var userKeyPair = new AspNetUserKeyPair()
                     {
                         Id = Guid.NewGuid(),
                         UserId = user.Id,

@@ -17,10 +17,10 @@ namespace StellarDotNetIdentityFramework.Areas.Identity.Pages.Account.Manage
         {
             _userManager = userManager;
             _context = context;
-            KeyPairs = new List<UserKeyPair>();
+            KeyPairs = new List<ApplicationUserKeyPair>();
         }
 
-        public IList<UserKeyPair> KeyPairs { get; set; }
+        public IList<ApplicationUserKeyPair> KeyPairs { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {

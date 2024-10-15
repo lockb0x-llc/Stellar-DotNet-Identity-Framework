@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-public class UserKeyPair
+public class ApplicationUserKeyPair
 {
     [Key]
     public Guid Id { get; set; }
