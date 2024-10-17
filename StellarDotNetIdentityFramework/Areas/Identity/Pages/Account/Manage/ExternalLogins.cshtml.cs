@@ -14,7 +14,11 @@ namespace StellarDotNetIdentityFramework.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+#pragma warning disable IDE0290 // Use primary constructor
         public ExternalLoginsModel(
+#pragma warning restore IDE0290 // Use primary constructor
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager)
         {

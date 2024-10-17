@@ -1,21 +1,29 @@
-﻿using StellarDotNetIdentityFramework.Models.Identity;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
-public class ApplicationUserKeyPair
+namespace StellarDotNetIdentityFramework.Models.Identity
 {
-    [Key]
-    public Guid Id { get; set; }
+    /// <summary>
+    /// Model for storing a user's keypair.
+    /// </summary>
+    [Table("UserKeyPairs")]
+    [Index(nameof(UserId), nameof(PublicKey), IsUnique = true)]
+    public class ApplicationUserKeyPair
+    {
+        [Key]
+        public Guid Id { get; set; }
 
-    public Guid UserId { get; set; }
+        public Guid UserId { get; set; }
 
-    [ForeignKey(nameof(UserId))]
-    public required ApplicationUser User { get; set; }
+        [ForeignKey(nameof(UserId))]
+        public virtual ApplicationUser User { get; set; }
 
-    public required string EncryptedKeyPair { get; set; }
-    public required string PublicKey { get; set; }
+        public required string EncryptedSecret { get; set; }
+        public required string PublicKey { get; set; }
 
-    public required string Label { get; set; }
+        public required string Label { get; set; }
 
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    }
 }

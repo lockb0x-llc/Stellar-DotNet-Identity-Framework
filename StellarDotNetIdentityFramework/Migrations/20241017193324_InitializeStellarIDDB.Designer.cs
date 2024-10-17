@@ -12,8 +12,8 @@ using StellarDotNetIdentityFramework.Data;
 namespace StellarDotNetIdentityFramework.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241011213448_Initialize-DB-Schema")]
-    partial class InitializeDBSchema
+    [Migration("20241017193324_InitializeStellarIDDB")]
+    partial class InitializeStellarIDDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,41 @@ namespace StellarDotNetIdentityFramework.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("ApplicationUserKeyPair", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("EncryptedSecret")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Label")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PublicKey")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "Label")
+                        .IsUnique();
+
+                    b.HasIndex("UserId", "PublicKey")
+                        .IsUnique();
+
+                    b.ToTable("UserKeyPairs");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
@@ -228,35 +263,15 @@ namespace StellarDotNetIdentityFramework.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("AspNetUserKeyPair", b =>
+            modelBuilder.Entity("ApplicationUserKeyPair", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                    b.HasOne("StellarDotNetIdentityFramework.Models.Identity.ApplicationUser", "User")
+                        .WithMany("KeyPairs")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("EncryptedKeyPair")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Label")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("PublicKey")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserKeyPairs");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -308,17 +323,6 @@ namespace StellarDotNetIdentityFramework.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("AspNetUserKeyPair", b =>
-                {
-                    b.HasOne("StellarDotNetIdentityFramework.Models.Identity.ApplicationUser", "User")
-                        .WithMany("KeyPairs")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("StellarDotNetIdentityFramework.Models.Identity.ApplicationUser", b =>

@@ -6,26 +6,118 @@
 
 <h1>@ViewData["Title"]</h1>
 
-<table>
-    <thead>
-        <tr>
-            <th>Label</th>
-            <th>Public Key</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var keypair in Model.KeyPairs)
-        {
-            <tr>
-                <td>@keypair.Label</td>
-                <td>@keypair.PublicKey</td>
-                <td>
-                    <a asp-page="UseKeypair" asp-route-id="@keypair.Id">Use</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<section class="row">
+    <h2>Add New Keypair</h2>
+    <span id="label-error" class="text-danger"></span>
 
-<a asp-page="AddKeypair">Add New Keypair</a>
+    <form id="add-keypair-form" method="post">
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            <label asp-for="Input.Label" class="form-label">Keypair Name</label>
+            <input asp-for="Input.Label" class="form-control" id="Input_Label" required />
+            <span asp-validation-for="Input.Label" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="Passphrase">Current Password</label>
+            <input type="password" id="Passphrase" class="form-control" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add Keypair</button>
+    </form>
+</section>
+
+<section class="row">
+    <h2>My Keypairs</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Public Key</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var keypair in Model.KeyPairs)
+            {
+                <tr>
+                    <td>@keypair.Label</td>
+                    <td>@keypair.PublicKey</td>
+                    <td>
+                        <a asp-page="UseKeypair" asp-route-id="@keypair.Id">Use</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/lib/stellar-sdk/stellar-sdk.min.js" asp-append-version="true"></script>
+    <script src="~/js/stellartools.js" asp-append-version="true"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Fetch existing keypairs when the page loads
+            fetch('/api/Keypairs/GetEncryptedKeypairs')
+                .then(response => response.json())
+                .then(data => {
+                    window.encryptedKeypairs = data;
+                })
+                .catch(error => {
+                    console.error('Error fetching keypairs:', error);
+                });
+        });
+
+        document.getElementById('add-keypair-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const label = document.getElementById('Input_Label').value;
+            const passphrase = document.getElementById('Passphrase').value;
+
+            // Clear previous error messages
+            document.getElementById('label-error').textContent = '';
+
+            // **Client-side duplicate label check**
+            
+            if (window.encryptedKeypairs && window.encryptedKeypairs.some(kp => kp.label === label)) {
+                document.getElementById('label-error').textContent = 'A keypair with this label already exists.';
+                return;
+            }
+
+            // Generate keypair and encrypt secret
+            const keypair = StellarSdk.Keypair.random();
+            const publicKey = keypair.publicKey();
+            const secretKey = keypair.secret();
+
+            const encryptedSecret = await getEncryptedSecret(secretKey, passphrase);
+
+            // Get the anti-forgery token
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+            // Send the data to the server
+            const response = await fetch('/api/Keypairs/Add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify({
+                    label: label,
+                    publicKey: publicKey,
+                    encryptedSecret: encryptedSecret
+                })
+            });
+
+            if (response.ok) {
+                alert('Keypair added successfully.');
+                window.location.href = 'Keypairs';
+            } else {
+                const errorText = await response.text();
+                alert('Error adding keypair: ' + errorText);
+            }
+        });
+
+    </script>
+}

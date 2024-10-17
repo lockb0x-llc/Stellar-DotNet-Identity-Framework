@@ -36,6 +36,12 @@ public class Program
 
         builder.Services.AddRazorPages();
 
+        builder.Services.AddAntiforgery(options =>
+        {
+            options.HeaderName = "RequestVerificationToken"; 
+        });
+
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -58,6 +64,7 @@ public class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
+        app.MapControllers();
         app.MapRazorPages();
 
         app.Run();
