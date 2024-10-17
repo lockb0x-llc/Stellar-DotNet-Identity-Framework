@@ -1,111 +1,96 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-#nullable disable
-
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.EntityFrameworkCore;
 using StellarDotNetIdentityFramework.Data;
 using StellarDotNetIdentityFramework.Models.Identity;
 
 namespace StellarDotNetIdentityFramework.Areas.Identity.Pages.Account
 {
+    /// <summary>
+    /// Model for user registration.
+    /// </summary>
     public class RegisterModel : PageModel
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IUserStore<ApplicationUser> _userStore;
-        private readonly IUserEmailStore<ApplicationUser> _emailStore;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
-        private readonly ApplicationDbContext _context;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RegisterModel"/> class.
+        /// </summary>
+#pragma warning disable IDE0290 // Use primary constructor
         public RegisterModel(
+#pragma warning restore IDE0290 // Use primary constructor
             UserManager<ApplicationUser> userManager,
-            IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            ILogger<RegisterModel> logger)
         {
             _userManager = userManager;
-            _userStore = userStore;
-            _emailStore = GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
-            _emailSender = emailSender;
         }
 
         [BindProperty]
-        public InputModel Input { get; set; }
+        public InputModel Input { get; set; } = default!;
 
-        public string ReturnUrl { get; set; }
+        public string ReturnUrl { get; set; } = default!;
 
-        public IList<AuthenticationScheme> ExternalLogins { get; set; }
+        public IList<AuthenticationScheme> ExternalLogins { get; set; } = default!;
 
-        public async Task OnGetAsync(string returnUrl = null)
+        /// <summary>
+        /// Handles GET requests.
+        /// </summary>
+        public async Task OnGetAsync(string? returnUrl = null)
         {
-            ReturnUrl = returnUrl;
+            ReturnUrl = returnUrl ?? Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        /// <summary>
+        /// Handles POST requests to register a new user.
+        /// </summary>
+        public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser
+                
+                var keyPair = new ApplicationUserKeyPair
                 {
                     Id = Guid.NewGuid(),
+                    UserId = Guid.NewGuid(),
+                    EncryptedSecret = Input.EncryptedSecret,
+                    PublicKey = Input.PublicKey,
+                    Label = "Initial Account Key",
+                    CreatedAt = DateTime.UtcNow
+                };
+                              
+
+                var user = new ApplicationUser
+                {
                     UserName = Input.Email,
                     Email = Input.Email,
-                    KeyPairs = new List<UserKeyPair>() // Initialize the required KeyPairs property
+                    KeyPairs = [keyPair]
                 };
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
-                    // Create and save the UserKeyPair
-                    var userKeyPair = new UserKeyPair()
-                    {
-                        Id = Guid.NewGuid(),
-                        UserId = user.Id,
-                        User = user, // Set the required User property
-                        EncryptedKeyPair = Input.encryptedKeypair, 
-                        Label = "Default Keypair",
-                        PublicKey = Input.PublicKey
-                    };
-
-                    _context.UserKeyPairs.Add(userKeyPair);
-                    await _context.SaveChangesAsync();
                     _logger.LogInformation("User created a new account with password.");
 
-                    var userId = await _userManager.GetUserIdAsync(user);
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
-                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                        var callbackUrl = Url.Page(
-                            "/Account/ConfirmEmail",
-                            pageHandler: null,
-                            values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
-                            protocol: Request.Scheme);
-
-
-                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                    
-                            return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-                        }
+                        // Handle email confirmation
+                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl });
+                    }
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
@@ -121,40 +106,31 @@ namespace StellarDotNetIdentityFramework.Areas.Identity.Pages.Account
             // If we got this far, something failed, redisplay form
             return Page();
         }
-        
-        private IUserEmailStore<ApplicationUser> GetEmailStore()
+
+        /// <summary>
+        /// Input model for user registration.
+        /// </summary>
+        public class InputModel
         {
-            if (!_userManager.SupportsUserEmail)
-            {
-                throw new NotSupportedException("The default UI requires a user store with email support.");
-            }
-            return (IUserEmailStore<ApplicationUser>)_userStore;
+            [Required]
+            [EmailAddress]
+            [Display(Name = "Email")]
+            public string Email { get; set; } = default!;
+
+            [Required]
+            [StringLength(100, MinimumLength = 6)]
+            [DataType(DataType.Password)]
+            [Display(Name = "Password")]
+            public string Password { get; set; } = default!;
+
+            [DataType(DataType.Password)]
+            [Display(Name = "Confirm password")]
+            [Compare("Password")]
+            public string ConfirmPassword { get; set; } = default!;
+
+            public string EncryptedSecret { get; set; } = default!;
+
+            public string PublicKey { get; set; } = default!;
         }
-                
-    }
-
-    public class InputModel
-    {
-        [Required]
-        [EmailAddress]
-        [Display(Name = "Email")]
-        public string Email { get; set; }
-
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
-        [DataType(DataType.Password)]
-        [Display(Name = "Password")]
-        public string Password { get; set; }
-
-        [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-        public string ConfirmPassword { get; set; }
-
-        [BindProperty]
-        public string encryptedKeypair { get; set; }
-
-        [BindProperty]
-        public string PublicKey { get; set; }
     }
 }

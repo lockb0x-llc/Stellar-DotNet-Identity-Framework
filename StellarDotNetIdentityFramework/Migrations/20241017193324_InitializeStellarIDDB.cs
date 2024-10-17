@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace StellarDotNetIdentityFramework.Migrations
 {
     /// <inheritdoc />
-    public partial class InitializeDBSchema : Migration
+    public partial class InitializeStellarIDDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -164,7 +164,7 @@ namespace StellarDotNetIdentityFramework.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    EncryptedKeyPair = table.Column<string>(type: "text", nullable: false),
+                    EncryptedSecret = table.Column<string>(type: "text", nullable: false),
                     PublicKey = table.Column<string>(type: "text", nullable: false),
                     Label = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -218,9 +218,16 @@ namespace StellarDotNetIdentityFramework.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserKeyPairs_UserId",
+                name: "IX_UserKeyPairs_UserId_Label",
                 table: "UserKeyPairs",
-                column: "UserId");
+                columns: new[] { "UserId", "Label" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserKeyPairs_UserId_PublicKey",
+                table: "UserKeyPairs",
+                columns: new[] { "UserId", "PublicKey" },
+                unique: true);
         }
 
         /// <inheritdoc />
