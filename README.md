@@ -14,7 +14,6 @@ The Microsoft Identity Platform, a widely-used authentication system, serves mil
 - **Account Abstraction**: Enhances username/password or password-less authentication with Stellar transaction signing and account recovery mechanisms.
 - **QR-Code Authorization and Signing Flow**: Introduces a QR code-based multi-factor authentication system that integrates with Stellar for secure transactions.
 - **Role and Group Management**: Adds capabilities to create and manage roles and groups within Microsoft Entra using Stellar Muxed accounts.
-- **NuGet Package Deployment**: After the integration, the updated framework will be released as a NuGet package for easy inclusion in projects using Visual Studio or Visual Studio Code.
 
 ## Compatibility and Deployment
 
@@ -31,7 +30,16 @@ The framework is designed to be compatible with multiple deployment environments
 
 ## Usage
 
-Developers can integrate this package by adding the NuGet package to their project, applying the necessary database migrations, and using the framework as they would with the original Microsoft Identity Framework. This approach saves weeks of development time, reduces costs, and mitigates risks while enabling robust account security features.
+- Clone or fork this repo and open it in Visual Studio.
+- Rename the solution and project to your preferred application name.
+- Configure the database connection.
+- Apply the database schema migration script.
+- Use the framework as with the original Microsoft Identity Framework.
+- Customize User Registration and related Identity Management Razor Views.
+- Build your Stellar Blockchain DotNet Razor App.
+- Consider utilizing the <a href="https://www.pakanacomponents.com" target="_blank">Pakana Stellar Components</a> to quickly get started with transaction signing, payment processing, and more.
+
+This approach saves weeks of development time, reduces costs, and mitigates risks while enabling robust account security features integrated with Stellar Account Management Features.
 
 ## Blockchain Transparency
 
