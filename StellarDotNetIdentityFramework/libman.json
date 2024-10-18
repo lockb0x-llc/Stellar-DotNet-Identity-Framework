@@ -17,6 +17,11 @@
     {
       "library": "stellar-sdk@12.2.0",
       "destination": "wwwroot/lib/stellar-sdk/"
+    },
+    {
+      "provider": "cdnjs",
+      "library": "qrcodejs@1.0.0",
+      "destination": "wwwroot/lib/qrcodejs/"
     }
   ]
 }
