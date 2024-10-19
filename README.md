@@ -1,4 +1,4 @@
-#Stellar DotHet Identity Framework
+#Stellar DotNet Identity Framework
 ## Stellar Account Integration for Microsoft Identity Platform
 
 ## Overview
