@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using StellarDotNetIdentityFramework.Data;
 using StellarDotNetIdentityFramework.Models.Identity;
@@ -24,23 +25,31 @@ public class Program
 
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-        builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
-            .AddRoles<ApplicationRole>()
-            .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddDefaultTokenProviders();
+        // Add Identity services using custom Applicationuser for the user and custom ApplicationRole for the role
+        // and custom ApplicationDbContext for the database context
+        //Adds token provider support for the default two-factor authentication types as well as for third party authenticator apps.
+        _ = builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = false;
+                options.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
+            })
+        .AddRoles<ApplicationRole>()
+        .AddEntityFrameworkStores<ApplicationDbContext>()
+        .AddDefaultTokenProviders();
 
         // Register UserManager and RoleManager services
         builder.Services.AddScoped<UserManager<ApplicationUser>>();
         builder.Services.AddScoped<RoleManager<ApplicationRole>>();
         builder.Services.AddScoped<SignInManager<ApplicationUser>>();
+        builder.Services.AddScoped<IUserStore<ApplicationUser>, UserStore<ApplicationUser, ApplicationRole, ApplicationDbContext, Guid>>();
+        builder.Services.AddScoped<IRoleStore<ApplicationRole>, RoleStore<ApplicationRole, ApplicationDbContext, Guid>>();
 
         builder.Services.AddRazorPages();
 
         builder.Services.AddAntiforgery(options =>
         {
-            options.HeaderName = "RequestVerificationToken"; 
+            options.HeaderName = "RequestVerificationToken";
         });
-
 
         var app = builder.Build();
 
