@@ -154,6 +154,37 @@ namespace StellarDotNetIdentityFramework.Controllers
 
             return Ok(new { success = true });
         }
+
+        [HttpPost("VerifyMfaAndGetSecret")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> VerifyMfaAndGetSecret([FromBody] MfaRequestModel model)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized();
+
+            var twoFactorCode = model.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
+
+            var isValid = await _userManager.VerifyTwoFactorTokenAsync(user, TokenOptions.DefaultAuthenticatorProvider, twoFactorCode);
+
+            if (!isValid)
+            {
+                return BadRequest(new { message = "Invalid verification code." });
+            }
+
+            // MFA verification successful
+            // Retrieve the encrypted secret
+            var keypair = await _context.UserKeyPairs.FindAsync(Guid.Parse(model.KeypairId));
+
+            if (keypair == null || keypair.UserId != user.Id)
+            {
+                return NotFound(new { message = "Keypair not found." });
+            }
+
+            return Ok(new { success = true, encryptedSecret = keypair.EncryptedSecret });
+        }
+
+
     }
 
     /// <summary>
@@ -190,5 +221,11 @@ namespace StellarDotNetIdentityFramework.Controllers
 
         [Required]
         public string EncryptedSecret { get; set; } = default!;
+    }
+
+    public class MfaRequestModel
+    {
+        public string TwoFactorCode { get; set; } = default!;
+        public string KeypairId { get; set; } = default!;
     }
 }

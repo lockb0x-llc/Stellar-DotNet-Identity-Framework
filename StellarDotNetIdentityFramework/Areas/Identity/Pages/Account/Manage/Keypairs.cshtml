@@ -41,83 +41,161 @@
         <tbody>
             @foreach (var keypair in Model.KeyPairs)
             {
-                <tr>
-                    <td>@keypair.Label</td>
-                    <td>@keypair.PublicKey</td>
-                    <td>
-                        <a asp-page="UseKeypair" asp-route-id="@keypair.Id">Use</a>
-                    </td>
-                </tr>
+                    <tr>
+                        <td>@keypair.Label</td>
+                        <td>@keypair.PublicKey</td>
+                        <td>
+                                <button class="btn btn-primary reveal-secret-btn" data-keypair-id="@keypair.Id">Reveal Secret</button>
+                        </td>
+                    </tr>
             }
         </tbody>
     </table>
 </section>
 
+<!-- Modal for MFA Verification -->
+<div class="modal fade" id="mfaModal" tabindex="-1" aria-labelledby="mfaModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="mfaForm" class="modal-content">
+            @Html.AntiForgeryToken()
+      <div class="modal-header">
+        <h5 class="modal-title" id="mfaModalLabel">MFA Verification</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Please enter the verification code from your authenticator app to reveal your secret key.</p>
+        <div class="form-group">
+            <label for="TwoFactorCode">Verification Code</label>
+            <input type="text" id="TwoFactorCode" class="form-control" autocomplete="one-time-code" required />
+            <span id="mfa-error" class="text-danger"></span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <input type="hidden" id="KeypairId" />
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary">Verify</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-    <script src="~/lib/stellar-sdk/stellar-sdk.min.js" asp-append-version="true"></script>
-    <script src="~/js/stellartools.js" asp-append-version="true"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Fetch existing keypairs when the page loads
-            fetch('/api/Keypairs/GetEncryptedKeypairs')
-                .then(response => response.json())
-                .then(data => {
-                    window.encryptedKeypairs = data;
-                })
-                .catch(error => {
-                    console.error('Error fetching keypairs:', error);
-                });
-        });
-
-        document.getElementById('add-keypair-form').addEventListener('submit', async function (e) {
-            e.preventDefault();
-
-            const label = document.getElementById('Input_Label').value;
-            const passphrase = document.getElementById('Passphrase').value;
-
-            // Clear previous error messages
-            document.getElementById('label-error').textContent = '';
-
-            // **Client-side duplicate label check**
-            
-            if (window.encryptedKeypairs && window.encryptedKeypairs.some(kp => kp.label === label)) {
-                document.getElementById('label-error').textContent = 'A keypair with this label already exists.';
-                return;
-            }
-
-            // Generate keypair and encrypt secret
-            const keypair = StellarSdk.Keypair.random();
-            const publicKey = keypair.publicKey();
-            const secretKey = keypair.secret();
-
-            const encryptedSecret = await getEncryptedSecret(secretKey, passphrase);
-
-            // Get the anti-forgery token
-            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
-
-            // Send the data to the server
-            const response = await fetch('/api/Keypairs/Add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'RequestVerificationToken': token
-                },
-                body: JSON.stringify({
-                    label: label,
-                    publicKey: publicKey,
-                    encryptedSecret: encryptedSecret
-                })
+        <partial name="_ValidationScriptsPartial" />
+        <script src="~/lib/stellar-sdk/stellar-sdk.min.js" asp-append-version="true"></script>
+        <script src="~/js/stellartools.js" asp-append-version="true"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Fetch existing keypairs when the page loads
+                fetch('/api/Keypairs/GetEncryptedKeypairs')
+                    .then(response => response.json())
+                    .then(data => {
+                        window.encryptedKeypairs = data;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching keypairs:', error);
+                    });
             });
 
-            if (response.ok) {
-                alert('Keypair added successfully.');
-                window.location.href = 'Keypairs';
-            } else {
-                const errorText = await response.text();
-                alert('Error adding keypair: ' + errorText);
-            }
-        });
+            document.querySelectorAll('.reveal-secret-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    const keypairId = this.getAttribute('data-keypair-id');
+                    // Set the keypair ID in the hidden input
+                    document.getElementById('KeypairId').value = keypairId;
+                    // Show the MFA modal
+                    var mfaModal = new bootstrap.Modal(document.getElementById('mfaModal'));
+                    mfaModal.show();
+                });
+            });
 
-    </script>
+            document.getElementById('mfaForm').addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const twoFactorCode = document.getElementById('TwoFactorCode').value;
+                const keypairId = document.getElementById('KeypairId').value;
+                const token = document.querySelector('#mfaForm input[name="__RequestVerificationToken"]').value;
+
+                // Clear previous error messages
+                document.getElementById('mfa-error').textContent = '';
+
+                const response = await fetch('/api/Keypairs/VerifyMfaAndGetSecret', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': token
+                    },
+                    body: JSON.stringify({
+                        twoFactorCode: twoFactorCode,
+                        keypairId: keypairId
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Decrypt the secret key using the passphrase
+                    const encryptedSecret = data.encryptedSecret;
+                    const passphrase = prompt('Enter your passphrase to decrypt your secret key:');
+                    const secretKey = await decryptSecret(encryptedSecret, passphrase);
+
+                    // Display the secret key in the modal
+                    document.getElementById('mfaModalLabel').textContent = 'Secret Key';
+                    document.querySelector('#mfaForm .modal-body').innerHTML = `<pre>${secretKey}</pre>`;
+                    document.querySelector('#mfaForm .modal-footer').innerHTML = '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>';
+                } else {
+                    // Display error message
+                    document.getElementById('mfa-error').textContent = data.message || 'Verification failed.';
+                }
+            });
+
+            document.getElementById('add-keypair-form').addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const label = document.getElementById('Input_Label').value;
+                const passphrase = document.getElementById('Passphrase').value;
+
+                // Clear previous error messages
+                document.getElementById('label-error').textContent = '';
+
+                // **Client-side duplicate label check**
+
+                if (window.encryptedKeypairs && window.encryptedKeypairs.some(kp => kp.label === label)) {
+                    document.getElementById('label-error').textContent = 'A keypair with this label already exists.';
+                    return;
+                }
+
+                // Generate keypair and encrypt secret
+                const keypair = StellarSdk.Keypair.random();
+                const publicKey = keypair.publicKey();
+                const secretKey = keypair.secret();
+
+                const encryptedSecret = await getEncryptedSecret(secretKey, passphrase);
+
+                // Get the anti-forgery token
+                const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+                // Send the data to the server
+                const response = await fetch('/api/Keypairs/Add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': token
+                    },
+                    body: JSON.stringify({
+                        label: label,
+                        publicKey: publicKey,
+                        encryptedSecret: encryptedSecret
+                    })
+                });
+
+                if (response.ok) {
+                    alert('Keypair added successfully.');
+                    window.location.href = 'Keypairs';
+                } else {
+                    const errorText = await response.text();
+                    alert('Error adding keypair: ' + errorText);
+                }
+            });
+
+        </script>
 }
