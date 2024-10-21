@@ -33,7 +33,7 @@ The framework is designed to be compatible with multiple deployment environments
 - Clone or fork this repo and open it in Visual Studio.
 - Rename the solution and project to your preferred application name.
 - Configure the database connection.
-- Apply the database schema migration script.
+- Generate and Apply the database schema migration script using Microsoft Entity Framework tooling.
 - Use the framework as with the original Microsoft Identity Framework.
 - Customize User Registration and related Identity Management Razor Views.
 - Build your Stellar Blockchain DotNet Razor App.
