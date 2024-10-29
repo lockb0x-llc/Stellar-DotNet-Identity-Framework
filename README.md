@@ -32,14 +32,17 @@ The framework is designed to be compatible with multiple deployment environments
 
 - Clone or fork this repo and open it in Visual Studio.
 - Rename the solution and project to your preferred application name.
-- Configure the database connection.
-- Apply the database schema migration script.
+- Configure the database connection and the JWT settings to your preferred Key, Issuer, and Audience values in the user secrets and/or application settings for your development/deployment environment.
+- If not using PostgreSQL, update Program.cs to use preferred database provider or directory service (MS Entra, etc).
+- Generate and Apply the database schema migration script using the standard Microsoft Entity Framework tooling.
 - Use the framework as with the original Microsoft Identity Framework.
-- Customize User Registration and related Identity Management Razor Views.
+- Customize User Registration and related Identity Management Razor Views in /Areas/Identity/Pages.
 - Build your Stellar Blockchain DotNet Razor App.
 - Consider utilizing the <a href="https://www.pakanacomponents.com" target="_blank">Pakana Stellar Components</a> to quickly get started with transaction signing, payment processing, and more.
 
 This approach saves weeks of development time, reduces costs, and mitigates risks while enabling robust account security features integrated with Stellar Account Management Features.
+
+
 
 ## Blockchain Transparency
 
