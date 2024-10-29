@@ -1,9 +1,3 @@
-You're absolutely right, and I apologize for the confusion. It appears that the documentation files are located within the `StellarDotNetIdentityFramework/docs/` directory in your repository. To fix the 404 errors, we'll update the links in the table of contents to use the full paths to the documentation files.
-
-Here is the updated `README.md` with the corrected links:
-
----
-
 # Stellar DotNet Identity Framework
 
 ## Stellar Account Integration for Microsoft Identity Platform
