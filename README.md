@@ -1,8 +1,14 @@
+Certainly! Now that you've moved the `docs` folder to the root of your repository, I'll regenerate the `README.md` with the corrected URLs to reflect the new location of your `docs` folder.
+
+Here is the updated `README.md`:
+
+---
+
 # Stellar DotNet Identity Framework
 
 ## Stellar Account Integration for Microsoft Identity Platform
 
-![Stellar DotNet Identity Framework](https://github.com/lockb0x-llc/Stellar-DotNet-Identity-Framework/assets/8976999/5e05ca83-3453-4b32-a7e6-4f28257df452)
+![Stellar DotNet Identity Framework](assets/5e05ca83-3453-4b32-a7e6-4f28257df452.png)
 
 ---
 
@@ -26,22 +32,22 @@ The Microsoft Identity Platform, a widely used authentication system, serves mil
 
 Comprehensive documentation is available to help you get started with the Stellar .NET Identity Platform Template:
 
-1. [Introduction](https://github.com/lockb0x-llc/Stellar-DotNet-Identity-Framework/blob/main/StellarDotNetIdentityFramework/docs/Introduction.md)
-2. [Prerequisites](https://github.com/lockb0x-llc/Stellar-DotNet-Identity-Framework/blob/main/StellarDotNetIdentityFramework/docs/Prerequisites.md)
-3. [Getting Started](https://github.com/lockb0x-llc/Stellar-DotNet-Identity-Framework/blob/main/StellarDotNetIdentityFramework/docs/GettingStarted.md)
-4. [Configuration](https://github.com/lockb0x-llc/Stellar-DotNet-Identity-Framework/blob/main/StellarDotNetIdentityFramework/docs/Configuration.md)
-5. [Authentication Methods](https://github.com/lockb0x-llc/Stellar-DotNet-Identity-Framework/blob/main/StellarDotNetIdentityFramework/docs/AuthenticationMethods.md)
-   - [Passwordless Authentication with Freighter](https://github.com/lockb0x-llc/Stellar-DotNet-Identity-Framework/blob/main/StellarDotNetIdentityFramework/docs/AuthenticationMethods.md#passwordless-authentication-with-freighter)
-   - [Multi-Factor Authentication (MFA)](https://github.com/lockb0x-llc/Stellar-DotNet-Identity-Framework/blob/main/StellarDotNetIdentityFramework/docs/AuthenticationMethods.md#multi-factor-authentication-mfa)
-6. [Keypair Management](https://github.com/lockb0x-llc/Stellar-DotNet-Identity-Framework/blob/main/StellarDotNetIdentityFramework/docs/KeypairManagement.md)
-   - [Generating Keypairs](https://github.com/lockb0x-llc/Stellar-DotNet-Identity-Framework/blob/main/StellarDotNetIdentityFramework/docs/KeypairManagement.md#generating-keypairs)
-   - [Managing Keypairs](https://github.com/lockb0x-llc/Stellar-DotNet-Identity-Framework/blob/main/StellarDotNetIdentityFramework/docs/KeypairManagement.md#managing-keypairs)
-7. [Running the Application](https://github.com/lockb0x-llc/Stellar-DotNet-Identity-Framework/blob/main/StellarDotNetIdentityFramework/docs/RunningTheApplication.md)
-8. [Deployment](https://github.com/lockb0x-llc/Stellar-DotNet-Identity-Framework/blob/main/StellarDotNetIdentityFramework/docs/Deployment.md)
-9. [Troubleshooting](https://github.com/lockb0x-llc/Stellar-DotNet-Identity-Framework/blob/main/StellarDotNetIdentityFramework/docs/Troubleshooting.md)
-10. [Contributing](https://github.com/lockb0x-llc/Stellar-DotNet-Identity-Framework/blob/main/StellarDotNetIdentityFramework/docs/Contributing.md)
-11. [License](https://github.com/lockb0x-llc/Stellar-DotNet-Identity-Framework/blob/main/StellarDotNetIdentityFramework/docs/License.md)
-12. [Contact Information](https://github.com/lockb0x-llc/Stellar-DotNet-Identity-Framework/blob/main/StellarDotNetIdentityFramework/docs/ContactInformation.md)
+1. [Introduction](docs/Introduction.md)
+2. [Prerequisites](docs/Prerequisites.md)
+3. [Getting Started](docs/GettingStarted.md)
+4. [Configuration](docs/Configuration.md)
+5. [Authentication Methods](docs/AuthenticationMethods.md)
+    - [Passwordless Authentication with Freighter](docs/AuthenticationMethods.md#passwordless-authentication-with-freighter)
+    - [Multi-Factor Authentication (MFA)](docs/AuthenticationMethods.md#multi-factor-authentication-mfa)
+6. [Keypair Management](docs/KeypairManagement.md)
+    - [Generating Keypairs](docs/KeypairManagement.md#generating-keypairs)
+    - [Managing Keypairs](docs/KeypairManagement.md#managing-keypairs)
+7. [Running the Application](docs/RunningTheApplication.md)
+8. [Deployment](docs/Deployment.md)
+9. [Troubleshooting](docs/Troubleshooting.md)
+10. [Contributing](docs/Contributing.md)
+11. [License](docs/License.md)
+12. [Contact Information](docs/ContactInformation.md)
 
 ---
 
@@ -93,13 +99,13 @@ For end-users, blockchain operations and signing are designed to be transparent.
 
 This integration not only extends the capabilities of the Microsoft Identity Platform with cutting-edge blockchain technology but also maintains the platform's ease of use and robust security features, making it an essential upgrade for any developer working within the Microsoft ecosystem.
 
-![Stellar Integration](https://github.com/lockb0x-llc/Stellar-DotNet-Identity-Framework/assets/8976999/a1324197-a474-482f-8f3d-8b5474c52028)
+![Stellar Integration](assets/a1324197-a474-482f-8f3d-8b5474c52028.png)
 
 ---
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](https://github.com/lockb0x-llc/Stellar-DotNet-Identity-Framework/blob/main/LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ---
 
@@ -139,6 +145,4 @@ If you have any questions or need assistance, feel free to contact us:
 
 - **Email**: [support@lockb0x-llc.com](mailto:support@lockb0x-llc.com)
 - **GitHub Issues**: [Create an Issue](https://github.com/lockb0x-llc/Stellar-DotNet-Identity-Framework/issues/new)
-
----
 
