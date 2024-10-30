@@ -1,9 +1,3 @@
-Certainly! Now that you've moved the `docs` folder to the root of your repository, I'll regenerate the `README.md` with the corrected URLs to reflect the new location of your `docs` folder.
-
-Here is the updated `README.md`:
-
----
-
 # Stellar DotNet Identity Framework
 
 ## Stellar Account Integration for Microsoft Identity Platform
