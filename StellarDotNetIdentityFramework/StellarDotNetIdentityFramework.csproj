@@ -3,7 +3,7 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<UserSecretsId>aspnet-StellarDotNetIdentityFramework-55aee1bf-3c6c-4049-b119-21268c708684</UserSecretsId>
+		<UserSecretsId></UserSecretsId>
 	</PropertyGroup>
 
 	<ItemGroup>
